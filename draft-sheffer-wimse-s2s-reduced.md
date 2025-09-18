@@ -400,7 +400,7 @@ A signed response would be:
 
 ## Error Conditions
 
-Errors may occur during the processing of the message signature or WPT. If the signature verification fails for any reason,
+Errors may occur during the processing of the message signature. If the signature verification fails for any reason,
 such as an invalid signature, an expired validity time window, or a malformed data structure, an error is returned. When used with HTTP, this will be in response to an API call, so an HTTP status code such as 400 (Bad Request) is appropriate. This response could
 include more details as per {{RFC9457}}, such as an indicator that the wrong key material or algorithm was used. For non-HTTP protocols, the WIMSE profile should define how errors are handled.
 
@@ -647,10 +647,19 @@ IANA is requested to register the "wimse" scheme to the "URI Schemes" registry {
 
 # DPoP-Inspired Authentication {#dpop-esque-auth}
 
+This appendix defines an alternative mechanism that provides different security guarantees than HTTP Message Signatures. For synchronous HTTP traffic, only
+the HTTP Message Signatures solution is specified. However
+future WIMSE protocols could make use of the DPoP-inspired
+mechanism and the Workload Proof Token (WPT) that it defines.
+As the WPT in its current form contains some HTTP dependencies (in particular, in
+the `aud` and `oth` claims), it would
+have to be modified to support non-HTTP protocols.
+
 This option, inspired by the OAuth DPoP specification {{?RFC9449}}, uses a DPoP-like mechanism to authenticate
 the calling workload in the context of the request. The Workload Identity Token ({{to-wit}}) is sent in the request as
 described in {{wit-http-header}}. An additional JWT, the Workload Proof Token (WPT), is signed by the private key
-corresponding to the public key in the WIT. The WPT is sent in the `Workload-Proof-Token` header field of the request.
+corresponding to the public key in the WIT. When used with HTTP,
+the WPT is sent in the `Workload-Proof-Token` header field of the request.
 The ABNF syntax of the `Workload-Proof-Token` header field is:
 
 ~~~ abnf
