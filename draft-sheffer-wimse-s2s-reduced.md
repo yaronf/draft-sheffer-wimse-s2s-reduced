@@ -19,8 +19,8 @@ venue:
   type: "Working Group"
   mail: "wimse@ietf.org"
   arch: "https://mailarchive.ietf.org/arch/browse/wimse/"
-  github: "ietf-wg-wimse/draft-ietf-wimse-s2s-protocol"
-  latest: "https://ietf-wg-wimse.github.io/draft-ietf-wimse-s2s-protocol/draft-ietf-wimse-s2s-protocol.html"
+  github: "yaronf/draft-sheffer-wimse-s2s-reduced"
+  latest: "https://yaronf.github.io/draft-sheffer-wimse-s2s-reduced/draft-sheffer-wimse-s2s-reduced.html"
 
 author:
  -
