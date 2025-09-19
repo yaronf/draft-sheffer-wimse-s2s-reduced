@@ -50,7 +50,7 @@ informative:
 
 --- abstract
 
-This doccument is a proposed revision that simplifies the working group's workload-to-workload protocol document. If accepted by the working group, these changes will be back-ported to that document. Otherwise, it was a good try.
+This document is a proposed revision that simplifies the working group's workload-to-workload protocol document. If accepted by the working group, these changes will be back-ported to that document. Otherwise, it was a good try.
 
 The WIMSE architecture defines authentication and authorization for software workloads
 in a variety of runtime environments, from the most basic ones up to complex
@@ -66,8 +66,18 @@ would be authenticated at the application level.
 
 --- middle
 
+# Foreword
+
+This document is a proposed revision that simplifies the working group's workload-to-workload protocol document. The main changes compared to draft-ietf-wimse-s2s-protocol-06 are:
+
+* Only one application-layer security solution is retained, the approach based on HTTP Message Signatures.
+* The alternative DPoP-inspired solution and the WPT construct have been  moved to an appendix, under the assumption that other protocols may leverage WPT in future WIMSE profiles.
+
+All other changes (such as removal of the comparison between the two options, IANA registrations, and security considerations) stem from these two primary modifications. If accepted by the working group, these changes will be back-ported to the working group's main document.
+
 # Introduction
 
+The WIMSE architecture defines authentication and authorization for software workloads
 This document defines authentication and authorization in the context of interaction between two workloads.
 This is the core component of the WIMSE architecture {{?I-D.ietf-wimse-arch}}.
 For simplicity, this document focuses on HTTP-based services,
@@ -443,6 +453,8 @@ The Workload Identifier is scoped within an issuer and therefore any sub-compone
 
 ## Workload Identity Token and Proof of Possession
 
+<cref> TODO: this section needs to be reworked if WPT is removed as a primary option. </cref>
+
 The Workload Identity Token (WIT) is bound to a secret cryptographic key and is always presented with a proof of possession as described in {{to-wit}}. The WIT is a general purpose token that can be presented in multiple contexts. The WIT and its PoP are only used in the application-level options, and both are not used in MTLS. The WIT MUST NOT be used as a bearer token. While this helps reduce the sensitivity of the token it is still possible that a token and its proof of possession may be captured and replayed within the PoP's lifetime. The following are some mitigations for the capture and reuse of the proof of possession (PoP):
 
 * Preventing Eavesdropping and Interception with TLS
@@ -481,6 +493,8 @@ Both the Workload Identity Token and the Workload Identity Certificate carry a p
 * SHOULD be re-generated for each new Workload Identity Token or Certificate.
 
 ## Middle Boxes {#middleboxes}
+
+<cref> TODO: this section needs to be reworked or eliminated if WPT is removed as a primary option. </cref>
 
 In some deployments the Workload Identity Token and proof of possession may pass through multiple systems. The communication between the systems is over TLS, but the token and PoP are available in the clear at each intermediary.  While the intermediary cannot modify the token or the information within the PoP they can attempt to capture and replay the token or modify the data not protected by the PoP.
 
@@ -562,6 +576,8 @@ Change controller: Internet Engineering Task Force (iesg@ietf.org).
 
 ### application/wimse-proof+jwt {#iana-wpt}
 
+<cref>Should we keep this? It is essential to the WPT definition so we probably should.</cref>
+
 Type name: application
 
 Subtype name: wimse-proof+jwt
@@ -621,6 +637,8 @@ IANA is requested to register the following entries to the "Hypertext Transfer P
 
 ### Workload-Proof-Token {#iana-wpt-field}
 
+<cref>Should we keep this? It only applies to WPT-in-HTTP so probably not.</cref>
+
 * Field Name: Workload-Proof-Token
 * Status: permanent
 * Structured Type: N/A
@@ -647,15 +665,16 @@ IANA is requested to register the "wimse" scheme to the "URI Schemes" registry {
 
 # DPoP-Inspired Authentication {#dpop-esque-auth}
 
-This appendix defines an alternative mechanism that provides different security guarantees than HTTP Message Signatures. For synchronous HTTP traffic, only
-the HTTP Message Signatures solution is specified. However
-future WIMSE protocols could make use of the DPoP-inspired
-mechanism and the Workload Proof Token (WPT) that it defines.
-As the WPT in its current form contains some HTTP dependencies (in particular, in
-the `aud` and `oth` claims), it would
-have to be modified to support non-HTTP protocols.
+This appendix defines an alternative mechanism that provides different
+  security guarantees than HTTP Message Signatures. For protecting
+  synchronous HTTP traffic, the use of HTTP Message Signatures is mandatory.
+  However, future WIMSE profiles may adopt the DPoP-inspired mechanism and
+  the Workload Proof Token (WPT) it defines. Since the current form of the
+  WPT includes certain HTTP-specific dependencies (particularly in the `aud`
+  and `oth` claims), it would need to be adapted to support non-HTTP
+  protocols.
 
-This option, inspired by the OAuth DPoP specification {{?RFC9449}}, uses a DPoP-like mechanism to authenticate
+The mechanism defined here is inspired by the OAuth DPoP specification {{?RFC9449}}, and uses a DPoP-like mechanism to authenticate
 the calling workload in the context of the request. The Workload Identity Token ({{to-wit}}) is sent in the request as
 described in {{wit-http-header}}. An additional JWT, the Workload Proof Token (WPT), is signed by the private key
 corresponding to the public key in the WIT. When used with HTTP,
@@ -776,6 +795,7 @@ To validate the WPT in the request, the recipient MUST ensure the following:
 ## draft-sheffer-wimse-s2s-reduced-00
 
 * A proposal to restructure the document.
+
 ## draft-ietf-wimse-s2s-protocol-07
 
 * Rework the WPT's oth claim
